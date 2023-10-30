@@ -7,23 +7,37 @@
 </head>
 <body>
 <div class="wrap">
-    <div class="logo">logo</div>
+    <div class="logo">
+        <a href="/">logo</a>
+    </div>
     <div class="content-wrap">
-        <div class="side-menu">
+        <div class="category-menu">
+            카테고리 메뉴
+            <div>
+                <li th:each="category : ${categoryList}" th:class="${category.id == targetcategory.id} ? 'selected-item' : '' ">
+                    <a th:href="@{|/create/${category.id}|}" th:text="${category.title}"></a>
+                </li>
+                <form action="/" method="post">
+                    <input type="submit" value="카테고리 추가">
+                </form>
+            </div>
+        </div>
+        <div class="page-menu">
+            페이지 메뉴
             <!--            3. 템플릿에서 게시물 목록 출력-->
             <ul>
-                <li th:each="post : ${postList}">
+                <li th:each="post : ${postList}" th:class="${post.id == targetPost.id} ? 'selected-item' : '' ">
                     <a th:href="@{|/detail/${post.id}|}" th:text="${post.title}"></a>
                 </li>
             </ul>
             <div>
                 <form action="/write" method="post">
-                    <input type="submit" value="추가">
+                    <input type="submit" value="게시물 추가">
                 </form>
             </div>
         </div>
         <div class="content">
-            <form action="/update" method="post">
+            <form method="post">
                 <div>
                     <input type="hidden" name="id" th:value="${targetPost.id}">
                 </div>
@@ -34,11 +48,25 @@
                     <textarea name="content" cols="30" rows="10" th:text="${targetPost.content}"></textarea>
                 </div>
                 <div>
-                    <input type="submit" value="수정">
+                    <input type="submit" value="수정" formaction="/update" onclick="return confirmUpdate();">
+                </div>
+                <div>
+                    <input type="submit" value="삭제" formaction="/delete" onclick="return confirmDelete();">
                 </div>
             </form>
         </div>
     </div>
 </div>
+<!--자바스크립트 시작-->
+<script>
+    function confirmDelete() {
+        return confirm("정말로 삭제하시겠습니까?");
+    }
+
+    function confirmUpdate() {
+        return confirm("정말로 수정하시겠습니까?");
+    }
+</script>
+<!--자바스크립트 끝-->
 </body>
 </html>
