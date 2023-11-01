@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="light" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="/main.css">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
 <div class="wrap">
@@ -13,16 +15,28 @@
     <div class="content-wrap">
         <div class="category-menu">
             카테고리 메뉴
-            <ul>
+<!--            <ul>-->
+<!--                <li th:each="category : ${categoryList}" th:class="${category.id == targetCategory.id} ? 'selected-item' : '' ">-->
+<!--                    <a th:href="@{|/category/${category.id}|}" th:text="${category.title}"></a>-->
+<!--                </li>-->
+<!--            </ul>-->
+            <ul class="menu">
                 <li th:each="category : ${categoryList}" th:class="${category.id == targetCategory.id} ? 'selected-item' : '' ">
-                    <a th:href="@{|/category/${category.id}|}" th:text="${category.title}"></a>
+                    <a th:href="@{|/category/${category.id}|}"></a>
+                    <details>
+                        <summary th:text="${category.title}"></summary>
+                        <ul>
+                            <li><a>level 2 item 1</a></li>
+                            <li><a>level 2 item 2</a></li>
+                        </ul>
+                    </details>
                 </li>
             </ul>
             <br>
             <div>
                 <form action="/category/createCategory" method="post">
                     <input type="hidden" name="postId" th:value="${targetPost.id}">
-                    <input type="submit" value="카테고리 추가">
+                    <button class="btn">카테고리 추가</button>
                 </form>
             </div>
         </div>
@@ -38,7 +52,7 @@
             <div>
                 <form action="/createPost" method="post">
                     <input type="hidden" name="categoryId" th:value="${targetCategory.id}">
-                    <input type="submit" value="게시물 추가">
+                    <button class="btn">게시물 추가</button>
                 </form>
             </div>
         </div>
@@ -52,39 +66,18 @@
                 </div>
                 <br>
                 <div>
-                    <textarea name="content" cols="50" rows="30" th:text="${targetPost.content}"></textarea>
+                    <textarea name="content" cols="100" rows="10" th:text="${targetPost.content}"></textarea>
                 </div>
                 <div>
-                    <input type="submit" value="수정" formaction="/update" onclick="return confirmUpdate();">
-                </div>
-                <div>
-                    <input type="submit" value="삭제" formaction="/delete" onclick="return confirmDelete();">
+                    <button class="btn" formaction="/update" onclick="return confirmUpdate();">수정</button>
+                    <button class="btn" formaction="/delete" onclick="return confirmDelete();">삭제</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 <!--자바스크립트 시작-->
-<script th:inline="javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        // 이벤트 위임(Event Delegation)을 사용하여 모든 링크에 대한 클릭 이벤트 처리
-        document.addEventListener('click', function(e) {
-            if (e.target.tagName === 'A' && e.target.getAttribute('href').startsWith('#')) {
-                e.preventDefault(); // 기본 동작 중지
-
-                const targetId = e.target.getAttribute('href'); // 링크의 href 속성을 가져옴
-                const targetElement = document.querySelector(targetId); // 해당 요소 검색
-
-                if (targetElement) {
-                    // 해당 요소로 스무스한 스크롤 이동
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            }
-        });
-    });
+<script>
     function confirmDelete() {
         return confirm("정말로 삭제하시겠습니까?");
     }

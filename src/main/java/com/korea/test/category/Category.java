@@ -20,6 +20,12 @@ public class Category {
     @Column(nullable = false)
     private LocalDateTime createDate;
 
+    @ManyToOne
+    private Category parent;
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
     private List<Post> postList;
+
+    @OneToMany(mappedBy = "parent")
+    private List<Category> childList;
 }
