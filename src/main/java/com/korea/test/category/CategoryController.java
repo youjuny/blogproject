@@ -1,55 +1,68 @@
 package com.korea.test.category;
 
+
 import com.korea.test.post.Post;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.korea.test.post.PostService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+
 @RequestMapping("/category")
+@RequiredArgsConstructor
 @Controller
 public class CategoryController {
-    @Autowired
-    private CategoryRepository categoryRepository;
+
+    private final PostService postService;
+    private final CategoryService categoryService;
 
     @RequestMapping("/")
     public String main(Model model) {
-        List<Category> categoryList = categoryRepository.findAll();
+
+        List<Post> postList = postService.getPostList();
+        List<Category> categoryList = categoryService.getCategoryList();
+
         if (categoryList.isEmpty()) {
-            saveDefault();
             return "redirect:/";
         }
+
+        if (postList.isEmpty()) {
+            postService.saveDefaultPost(categoryList.get(0));
+            return "redirect:/";
+        }
+
         model.addAttribute("categoryList", categoryList);
+        model.addAttribute("postList", postList);
+        model.addAttribute("targetPost", postList.get(0));
         model.addAttribute("targetCategory", categoryList.get(0));
 
         return "main";
     }
 
-    @GetMapping("/detail/{id}")
-    public String detail(Model model, @PathVariable Long id) {
-        Category category= categoryRepository.findById(id).get();
-        model.addAttribute("targetCategory", category);
-        model.addAttribute("categoryList", categoryRepository.findAll());
-
-        return "main";
-    }
-
-    @PostMapping("/create")
-    public String categoryCreate() {
-        saveDefault();
+    @PostMapping("/createCategory")
+    public String createCategory() {
+        Category category = categoryService.saveDefaultCategory();
+        postService.saveDefaultPost(category);
         return "redirect:/";
     }
 
-    private void saveDefault() {
-        Category category = new Category();
-        category.setTitle("new category");
-        categoryRepository.save(category);
+    @RequestMapping("/{categoryId}")
+    public String categoryDetail(@PathVariable("categoryId") Long categoryId, Model model) {
+
+        Category category = categoryService.getCategoryById(categoryId);
+        List<Category> categoryList = categoryService.getCategoryList();
+
+        model.addAttribute("categoryList", categoryList);
+        model.addAttribute("postList", category.getPostList());
+        model.addAttribute("targetPost", category.getPostList().get(0));
+        model.addAttribute("targetCategory" , category);
+
+        return "main";
     }
 
 }

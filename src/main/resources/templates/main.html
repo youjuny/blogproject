@@ -13,11 +13,15 @@
     <div class="content-wrap">
         <div class="category-menu">
             카테고리 메뉴
-            <div>
-                <li th:each="category : ${categoryList}" th:class="${category.id == targetcategory.id} ? 'selected-item' : '' ">
-                    <a th:href="@{|/create/${category.id}|}" th:text="${category.title}"></a>
+            <ul>
+                <li th:each="category : ${categoryList}" th:class="${category.id == targetCategory.id} ? 'selected-item' : '' ">
+                    <a th:href="@{|/category/${category.id}|}" th:text="${category.title}"></a>
                 </li>
-                <form action="/" method="post">
+            </ul>
+            <br>
+            <div>
+                <form action="/category/createCategory" method="post">
+                    <input type="hidden" name="postId" th:value="${targetPost.id}">
                     <input type="submit" value="카테고리 추가">
                 </form>
             </div>
@@ -27,25 +31,28 @@
             <!--            3. 템플릿에서 게시물 목록 출력-->
             <ul>
                 <li th:each="post : ${postList}" th:class="${post.id == targetPost.id} ? 'selected-item' : '' ">
-                    <a th:href="@{|/detail/${post.id}|}" th:text="${post.title}"></a>
+                    <a th:href="@{|/postDetail/${post.id}|}" th:text="${post.title}"></a>
                 </li>
             </ul>
+            <br>
             <div>
-                <form action="/write" method="post">
+                <form action="/createPost" method="post">
+                    <input type="hidden" name="categoryId" th:value="${targetCategory.id}">
                     <input type="submit" value="게시물 추가">
                 </form>
             </div>
         </div>
         <div class="content">
-            <form method="post">
+            <form id="updateForm" method="post">
                 <div>
                     <input type="hidden" name="id" th:value="${targetPost.id}">
                 </div>
                 <div>
                     <input type="text" name="title" th:value="${targetPost.title}">
                 </div>
+                <br>
                 <div>
-                    <textarea name="content" cols="30" rows="10" th:text="${targetPost.content}"></textarea>
+                    <textarea name="content" cols="50" rows="30" th:text="${targetPost.content}"></textarea>
                 </div>
                 <div>
                     <input type="submit" value="수정" formaction="/update" onclick="return confirmUpdate();">
@@ -58,7 +65,26 @@
     </div>
 </div>
 <!--자바스크립트 시작-->
-<script>
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        // 이벤트 위임(Event Delegation)을 사용하여 모든 링크에 대한 클릭 이벤트 처리
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' && e.target.getAttribute('href').startsWith('#')) {
+                e.preventDefault(); // 기본 동작 중지
+
+                const targetId = e.target.getAttribute('href'); // 링크의 href 속성을 가져옴
+                const targetElement = document.querySelector(targetId); // 해당 요소 검색
+
+                if (targetElement) {
+                    // 해당 요소로 스무스한 스크롤 이동
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        });
+    });
     function confirmDelete() {
         return confirm("정말로 삭제하시겠습니까?");
     }
