@@ -9,34 +9,42 @@
 </head>
 <body>
 <div class="wrap">
+    <!-- 로고 시작   -->
     <div class="logo">
-        <a href="/">logo</a>
+        <a href="/" class="btn btn-ghost normal-case text-xl">logo</a>
     </div>
-    <div class="content-wrap">
+    <!-- 로고 끝   -->
+    <!-- 네비게이션바 시작 -->
+    <div class="navbar bg-base-100">
+        <div class="flex-none">
+            <button class="btn btn-square btn-ghost" onclick="toggleMenus()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+        <div class="flex-1"></div>
+        <div class="flex-none">
+            <button class="btn btn-square btn-ghost">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
+            </button>
+        </div>
+    </div>
+    <!-- 네비게이션바 끝 -->
+    <div class="content-wrap" id="sideMenu">
+        <!-- 카테고리 시작  -->
         <div class="category-menu">
             카테고리 메뉴
-<!--            <ul>-->
-<!--                <li th:each="category : ${categoryList}" th:class="${category.id == targetCategory.id} ? 'selected-item' : '' ">-->
-<!--                    <a th:href="@{|/category/${category.id}|}" th:text="${category.title}"></a>-->
-<!--                </li>-->
-<!--            </ul>-->
             <ul class="menu">
-                <li th:each="category : ${categoryList}" th:class="${category.id == targetCategory.id} ? 'selected-item' : '' ">
-                    <a th:href="@{|/category/${category.id}|}"></a>
-                    <details>
-                        <summary th:text="${category.title}"></summary>
-                        <ul>
-                            <li><a>level 2 item 1</a></li>
-                            <li><a>level 2 item 2</a></li>
-                        </ul>
-                    </details>
-                </li>
+                <li th:replace="~{/fragments :: tree(${targetCategory}, ${categoryList})}"></li>
             </ul>
             <br>
             <div>
                 <form action="/category/createCategory" method="post">
-                    <input type="hidden" name="postId" th:value="${targetPost.id}">
                     <button class="btn">카테고리 추가</button>
+                </form>
+                <br>
+                <form action="/category/add-group" method="post">
+                    <input type="hidden" name="categoryId" th:value="${targetCategory.id}">
+                    <button class="btn">하위 카테고리 추가</button>
                 </form>
             </div>
         </div>
@@ -62,11 +70,11 @@
                     <input type="hidden" name="id" th:value="${targetPost.id}">
                 </div>
                 <div>
-                    <input type="text" name="title" th:value="${targetPost.title}">
+                    <input type="text" name="title" style="width:757px;" th:value="${targetPost.title}">
                 </div>
                 <br>
                 <div>
-                    <textarea name="content" cols="100" rows="10" th:text="${targetPost.content}"></textarea>
+                    <textarea name="content" cols="100" rows="20" th:text="${targetPost.content}"></textarea>
                 </div>
                 <div>
                     <button class="btn" formaction="/update" onclick="return confirmUpdate();">수정</button>
@@ -75,6 +83,7 @@
             </form>
         </div>
     </div>
+    <!-- 카테고리 끝 -->
 </div>
 <!--자바스크립트 시작-->
 <script>
@@ -84,6 +93,20 @@
 
     function confirmUpdate() {
         return confirm("정말로 수정하시겠습니까?");
+    }
+</script>
+<script>
+    function toggleMenus() {
+        var categoryMenu = document.querySelector('.category-menu');
+        var pageMenu = document.querySelector('.page-menu');
+
+        if (categoryMenu.style.display === 'none' || categoryMenu.style.display === '') {
+            categoryMenu.style.display = 'block'; // 카테고리 메뉴 보이기
+            pageMenu.style.display = 'block'; // 페이지 메뉴 보이기
+        } else {
+            categoryMenu.style.display = 'none'; // 카테고리 메뉴 숨기기
+            pageMenu.style.display = 'none'; // 페이지 메뉴 숨기기
+        }
     }
 </script>
 <!--자바스크립트 끝-->

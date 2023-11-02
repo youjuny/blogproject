@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<li th:fragment="tree(targetCategory, categoryList)" th:each="category : ${categoryList}" th:class="${#lists.isEmpty(category.childList) and category.id == targetCategory.id} ? 'selected-item' : '' ">
+    <a th:href="@{|/category/${category.id}|}" th:if="${#lists.isEmpty(category.childList)}" th:text="${category.title}"></a>
+    <details th:unless="${#lists.isEmpty(category.childList)}">
+        <summary th:class="${category.id == targetCategory.id} ? 'selected-item' : '' ">
+            <a th:href="@{|/category/${category.id}|}" th:text="${category.title}"></a>
+        </summary>
+        <ul>
+            <li th:if="${#lists.isEmpty(category.childList)}" th:replace="~{/fragments :: tree(${targetCategory}, ${category.childList})}"></li>
+        </ul>
+    </details>
+</li>
+</body>
+</html>

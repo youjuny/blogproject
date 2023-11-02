@@ -24,12 +24,26 @@ public class CategoryService {
         throw new IllegalArgumentException("없는 카테고리번호입니다.");
     }
 
-    public Category saveDefaultCategory() {
+    public Category getDefaultCategory() {
         Category category = new Category();
         category.setTitle("새로운 카테고리");
         category.setCreateDate(LocalDateTime.now());
+        return category;
+    }
 
+    public Category saveDefaultCategory() {
+        Category category = getDefaultCategory();
         return categoryRepository.save(category);
     }
 
+    public Category saveGroupCategory(Long parentId) {
+        Category parentCategory = getCategoryById(parentId);
+        Category childCategory = getDefaultCategory();
+        childCategory.setParent(parentCategory);
+        return categoryRepository.save(childCategory);
+    }
+
+    public List<Category> getParentCategoryList() {
+        return categoryRepository.findByParentId(null);
+    }
 }

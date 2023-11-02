@@ -25,7 +25,7 @@ public class CategoryController {
     public String main(Model model) {
 
         List<Post> postList = postService.getPostList();
-        List<Category> categoryList = categoryService.getCategoryList();
+        List<Category> categoryList = categoryService.getParentCategoryList();
 
         if (categoryList.isEmpty()) {
             return "redirect:/";
@@ -48,14 +48,22 @@ public class CategoryController {
     public String createCategory() {
         Category category = categoryService.saveDefaultCategory();
         postService.saveDefaultPost(category);
-        return "redirect:/";
+        return "redirect:/category/" + category.getId();
     }
+
+    @RequestMapping("/add-group")
+    public String addGroup(Long categoryId) {
+        Category category = categoryService.saveGroupCategory(categoryId);
+        postService.saveDefaultPost(category);
+        return "redirect:/category/" + category.getId();
+    }
+
 
     @RequestMapping("/{categoryId}")
     public String categoryDetail(@PathVariable("categoryId") Long categoryId, Model model) {
 
         Category category = categoryService.getCategoryById(categoryId);
-        List<Category> categoryList = categoryService.getCategoryList();
+        List<Category> categoryList = categoryService.getParentCategoryList();
 
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("postList", category.getPostList());
@@ -64,5 +72,4 @@ public class CategoryController {
 
         return "main";
     }
-
 }

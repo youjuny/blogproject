@@ -60,9 +60,15 @@ a{
     width:80%;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .content > form > div > btn{
     display: flex;
     justify-content: flex-end;
 }
+
+.group-add {
+    display:inline-block;
+}
+

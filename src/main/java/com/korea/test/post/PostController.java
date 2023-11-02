@@ -18,7 +18,7 @@ public class PostController {
     @RequestMapping("/")
     public String main(Model model) {
         //1. DB에서 데이터 꺼내오기
-        List<Category> categoryList = categoryService.getCategoryList();
+        List<Category> categoryList = categoryService.getParentCategoryList();
 
         if(categoryList.isEmpty()) {
             categoryService.saveDefaultCategory();
@@ -58,7 +58,7 @@ public class PostController {
     public String postDetail(Model model, @PathVariable Long id) {
         Post post = postService.getPostById(id);
         List<Post> postList = postService.getPostListByCategory(post.getCategory());
-        List<Category> categoryList = categoryService.getCategoryList();
+        List<Category> categoryList = categoryService.getParentCategoryList();
 
         model.addAttribute("targetPost", post);
         model.addAttribute("postList", postService.getPostList());
