@@ -79,7 +79,6 @@ public class CategoryController {
             this.categoryService.deleteById(id);
             return "redirect:/";
         } else {
-            System.out.println("에러입니다.");
             return "redirect:/";
         }
     }

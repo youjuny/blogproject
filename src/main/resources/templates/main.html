@@ -47,16 +47,16 @@
                     <button class="btn">하위 카테고리 추가</button>
                 </form>
                 <br>
-                <form action="/category/categoryUpdate" method="post">
-                    <input type="hidden" name="categoryId" th:value="${targetCategory.id}">
-                    <button class="btn" onclick="return confirmCategoryUpdate();">카테고리수정</button>
-                </form>
-                <br>
                 <form action="/category/categoryDelete" method="post">
-                    <input type="hidden" name="categoryId" th:value="${targetCategory.id}">
+                    <input type="hidden" name="id" th:value="${targetCategory.id}">
                     <button class="btn" onclick="return confirmCategoryDelete();">카테고리삭제</button>
                 </form>
-
+                <br>
+                <form action="/category/categoryUpdate" method="post">
+                    <input type="hidden" name="id" th:value="${targetCategory.id}">
+                    <input type="text" name="title" placeholder="Type here" class="input input-bordered w-full max-w-xs" th:value="${targetCategory.title}">
+                    <button class="btn" onclick="return confirmCategoryUpdate();">카테고리수정</button>
+                </form>
             </div>
         </div>
         <div class="page-menu">
@@ -75,6 +75,7 @@
                 </form>
             </div>
         </div>
+        <!-- 게시물 입력 구간 시작 -->
         <div class="content">
             <form id="updateForm" method="post">
                 <div>
@@ -93,6 +94,7 @@
                 </div>
             </form>
         </div>
+        <!-- 게시물 입력 구간 끝 -->
     </div>
     <!-- 카테고리 끝 -->
 </div>
