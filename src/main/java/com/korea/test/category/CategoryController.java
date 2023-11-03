@@ -72,4 +72,31 @@ public class CategoryController {
 
         return "main";
     }
+
+    @PostMapping("/categoryDelete")
+    public String categoryDelete(Long id) {
+        if (id != null) {
+            this.categoryService.deleteById(id);
+            return "redirect:/";
+        } else {
+            System.out.println("에러입니다.");
+            return "redirect:/";
+        }
+    }
+
+    @PostMapping("/categoryUpdate")
+    public String categoryUpdate(Long id, String title) {
+        Category category = categoryService.getCategoryById(id);
+
+        if(title.trim().length() == 0 ) {
+            title = "카테고리 제목없음";
+        }
+
+        category.setTitle(title);
+
+        categoryService.save(category);
+        return "redirect:/category/" + id;
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.korea.test.category;
 
+import com.korea.test.post.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,10 @@ public class CategoryService {
         return category;
     }
 
+    public void save(Category category) {
+        categoryRepository.save(category);
+    }
+
     public Category saveDefaultCategory() {
         Category category = getDefaultCategory();
         return categoryRepository.save(category);
@@ -46,4 +51,9 @@ public class CategoryService {
     public List<Category> getParentCategoryList() {
         return categoryRepository.findByParentId(null);
     }
+
+    public void deleteById(Long id) {
+        categoryRepository.deleteById(id);
+    }
+
 }

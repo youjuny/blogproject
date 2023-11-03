@@ -68,8 +68,8 @@ public class PostController {
 
         return "main";
     }
-    @PostMapping("/update")
-    public String update(Long id, String title, String content) {
+    @PostMapping("/postUpdate")
+    public String postUpdate(Long id, String title, String content) {
         Post post = postService.getPostById(id);
 
         if(title.trim().length() == 0 ) {
@@ -83,8 +83,8 @@ public class PostController {
         return "redirect:/postDetail/" + id;
     }
 
-    @PostMapping("/delete")
-    public String delete(Long id) {
+    @PostMapping("/postDelete")
+    public String postDelete(Long id) {
         this.postService.deleteById(id); ;
         return "redirect:/";
     }
