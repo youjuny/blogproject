@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html data-theme="light" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/signup.css">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+</head>
+<body>
+<div>
+    <h1>회원 가입</h1>
+</div>
+<div class="content">
+    <form id="signForm" method="post">
+        <div>
+            아이디 :
+            <input type="text" name="userId" style="width:400px;">
+        </div>
+        <br>
+        <div>
+            비밀번호 :
+            <input type="text" name="password" style="width:400px;">
+        </div>
+        <br>
+        <div>
+            비밀번호 확인 :
+            <input type="text" name="confirmPassword" style="width:400px;">
+        </div>
+        <br>
+        <div>
+            닉네임 :
+            <input type="text" name="nickname" style="width:400px;">
+        </div>
+        <br>
+        <div>
+            <button class="btn" formaction="/postUpdate" onclick="return Sign();">가입하기</button>
+        </div>
+    </form>
+</div>
+<script>
+    function Sign() {
+        return confirm("가입하시겠습니까?");
+    }
+</script>
+</body>
+</html>
