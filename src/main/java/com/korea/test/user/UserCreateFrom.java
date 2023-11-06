@@ -11,7 +11,7 @@ import lombok.Setter;
 public class UserCreateFrom {
     @Size(min = 3, max = 25)
     @NotEmpty(message = "사용자ID는 필수 항목입니다.")
-    private String userId;
+    private String username;
 
     @NotEmpty(message = "비밀번호는 필수 항목입니다.")
     private String password;
@@ -19,7 +19,7 @@ public class UserCreateFrom {
     @NotEmpty(message = "비밀번호 확인는 필수 항목입니다.")
     private String confirmPassword;
 
-    @Size(min = 3, max = 25)
+    @Size(min = 2, max = 25)
     @NotEmpty(message = "닉네임은 필수 항목입니다.")
     private String nickname;
 

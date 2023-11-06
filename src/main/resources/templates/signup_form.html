@@ -9,33 +9,43 @@
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 </head>
 <body>
+<div class="logo">
+    <a href="/" class="btn btn-ghost normal-case text-xl">logo</a>
+</div>
 <div>
     <h1>회원 가입</h1>
 </div>
+<br>
 <div class="content">
-    <form id="signForm" method="post">
-        <div>
+    <form th:action="@{/user/signup}" id="signForm" object="${userCreateForm}" method="post">
+        <div replace="~{form_errors :: formErrorsFragment}"></div>
+        <div class="form-control w-full max-w-xs">
             아이디 :
-            <input type="text" name="userId" style="width:400px;">
+            <input type="text" name="username" field="*{username}" placeholder="아이디를 입력하세요" class="input input-bordered w-full max-w-xs" />
         </div>
         <br>
         <div>
             비밀번호 :
-            <input type="text" name="password" style="width:400px;">
+            <input type="password" name="password" field="*{password}" placeholder="비밀번호를 입력하세요" class="input input-bordered w-full max-w-xs" />
         </div>
         <br>
         <div>
             비밀번호 확인 :
-            <input type="text" name="confirmPassword" style="width:400px;">
+            <input type="password" name="confirmPassword" field="*{confirmPassword}" placeholder="비밀번호를 다시 입력하세요" class="input input-bordered w-full max-w-xs" />
         </div>
         <br>
         <div>
             닉네임 :
-            <input type="text" name="nickname" style="width:400px;">
+            <input type="text" name="nickname" field="*{nickname}" placeholder="닉네임을 입력하세요" class="input input-bordered w-full max-w-xs" />
         </div>
         <br>
         <div>
-            <button class="btn" formaction="/postUpdate" onclick="return Sign();">가입하기</button>
+            이메일 :
+            <input type="email" name="email" field="*{email}" placeholder="이메일을 입력하세요" class="input input-bordered w-full max-w-xs" />
+        </div>
+        <br>
+        <div>
+            <button class="btn" onclick="return Sign();">가입하기</button>
         </div>
     </form>
 </div>

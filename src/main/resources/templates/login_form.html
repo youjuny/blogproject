@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html data-theme="light" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/signup.css">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+</head>
+<body>
+<div class="logo">
+    <a href="/" class="btn btn-ghost normal-case text-xl">logo</a>
+</div>
+<div>
+    <h1>로그인</h1>
+</div>
+<br>
+<div class="content">
+    <form th:action="@{/user/login}" id="loginForm" method="post">
+        <div th:if="${param.error}">
+            <div class="alert alert-danger">
+                사용자ID 또는 비밀번호를 확인해 주세요.
+            </div>
+        </div>
+        <div class="form-control w-full max-w-xs">
+            아이디 :
+            <input type="text" name="username" id="username" placeholder="아이디를 입력하세요" class="input input-bordered w-full max-w-xs" />
+        </div>
+        <br>
+        <div>
+            비밀번호 :
+            <input type="password" name="password" id="password" placeholder="비밀번호를 입력하세요" class="input input-bordered w-full max-w-xs" />
+        </div>
+        <br>
+        <div>
+            <button class="btn">로그인 하기</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

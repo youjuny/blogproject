@@ -2,6 +2,7 @@ package com.korea.test.user;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,17 +14,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/user")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/signup")
     public String signup(UserCreateFrom userCreateFrom) {
         return "signup_form";
     }
 
-    @PostMapping("/singup")
-    public  String signup(@Valid UserCreateFrom userCreateFrom, BindingResult bindingResult) {
+    @PostMapping("/signup")
+    public String signup(@Valid UserCreateFrom userCreateFrom, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "sign_form";
+            return "signup_form";
         }
 
         if (!userCreateFrom.getPassword().equals(userCreateFrom.getConfirmPassword())) {
@@ -32,10 +33,24 @@ public class UserController {
             return "signup_form";
         }
 
-        userService.create(userCreateFrom.getUserId(),userCreateFrom.getEmail(), userCreateFrom.getNickname(), userCreateFrom.getPassword());
+        try {
+            userService.create(userCreateFrom.getUsername(),userCreateFrom.getEmail(), userCreateFrom.getNickname(), userCreateFrom.getPassword());
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            bindingResult.reject("singupFailed", "이미 등록된 사용자입니다.");
+            return "signup_form";
+        } catch (Exception e) {
+            e.printStackTrace();
+            bindingResult.reject("signupFailed", e.getMessage());
+            return "signup_form";
+        }
 
         return "redirect:/";
+    }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login_form";
     }
 
 }
