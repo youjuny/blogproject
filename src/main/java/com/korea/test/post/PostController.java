@@ -48,7 +48,7 @@ public class PostController {
     public String createPost (Long categoryId) {
         Category category = categoryService.getCategoryById(categoryId);
         postService.saveDefaultPost(category);
-        return "redirect:/";
+        return "redirect:/categoryId" + categoryId;
     }
 
 

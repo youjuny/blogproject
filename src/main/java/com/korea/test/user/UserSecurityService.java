@@ -16,8 +16,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class UserSecurityService implements UserDetailsService {
-    private final UserRepository userRepository;
 
+    private final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<com.korea.test.user.User> _user = this.userRepository.findByusername(username);

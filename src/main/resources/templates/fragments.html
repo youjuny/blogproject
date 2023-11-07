@@ -6,10 +6,10 @@
 </head>
 <body>
 <li th:fragment="tree(targetCategory, categoryList)" th:each="category : ${categoryList}" th:class="${#lists.isEmpty(category.childList) and category.id == targetCategory.id} ? 'selected-item' : '' ">
-    <a th:href="@{|/category/${category.id}|}" th:if="${#lists.isEmpty(category.childList)}" th:text="${category.title}"></a>
-    <details th:unless="${#lists.isEmpty(category.childList)}">
+    <a th:href="@{|/category/${category.id}|}" th:if="${#lists.isEmpty(category.childList)}" th:text="${category.title}" onclick="saveOpenList()"></a>
+    <details th:id="${'d' + category.id}" th:unless="${#lists.isEmpty(category.childList)}">
         <summary th:class="${category.id == targetCategory.id} ? 'selected-item' : '' ">
-            <a th:href="@{|/category/${category.id}|}" th:text="${category.title}"></a>
+            <a th:href="@{|/category/${category.id}|}" th:text="${category.title}" onclick="saveOpenList()"></a>
         </summary>
         <ul>
             <li th:if="${#lists.isEmpty(category.childList)}" th:replace="~{/fragments :: tree(${targetCategory}, ${category.childList})}"></li>

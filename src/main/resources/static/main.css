@@ -72,3 +72,9 @@ a{
     display:inline-block;
 }
 
+.toast-editor-custom {
+    background:white;
+    width:1300px;
+}
+
+

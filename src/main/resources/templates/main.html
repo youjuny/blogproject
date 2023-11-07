@@ -6,10 +6,8 @@
     <link rel="stylesheet" href="/main.css">
     <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 </head>
 <body>
-<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <div class="wrap">
     <!-- 로고 시작   -->
     <div class="logo">
@@ -88,11 +86,22 @@
                     <input type="hidden" name="id" th:value="${targetPost.id}">
                 </div>
                 <div>
-                    <input type="text" name="title" style="width:757px;" th:value="${targetPost.title}">
+                    <input type="text" name="title" class="input input-bordered w-full max-w-xs"  style="width:1000px;" th:value="${targetPost.title}">
                 </div>
                 <br>
-                <div id="toastEditor">
-                    <textarea name="content" cols="100" rows="20" th:text="${targetPost.content}"></textarea>
+                <div class="toast-editor-custom">
+                    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+                    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+                    <div id="editor"></div>
+                    <script>
+                        const editor = new toastui.Editor({
+                          el: document.querySelector('#editor'),
+                          previewStyle: 'vertical',
+                          height: '600px',
+                          initialValue: ""
+                        });
+                    </script>
+                    <!--                    <textarea name="content" cols="100" rows="20" th:text="${targetPost.content}"></textarea>-->
                 </div>
                 <div>
                     <button sec:authorize="isAuthenticated()" class="btn" formaction="/postUpdate" onclick="return confirmPostUpdate();">수정</button>
@@ -118,6 +127,27 @@
     function confirmCategoryUpdate() {
         return confirm("정말로 해당 카테고리를 수정하시겠습니까?");
     }
+
+    function saveOpenList() {
+            let resultList = document.querySelectorAll("details");
+            let openList = [];
+            resultList.forEach(function (item) {
+                if(item.getAttribute("open") != null) {
+                    openList.push(item.getAttribute("id"));
+                }
+            });
+
+            localStorage.setItem("openList", JSON.stringify(openList));
+            console.log("hihi");
+    }
+    const openList = localStorage.getItem("openList");
+
+    if(openList != null) {
+         openListArr = JSON.parse(openList);
+         openListArr.forEach(function (item) {
+             document.getElementById(item).setAttribute("open", true);
+         });
+    }
 </script>
 <script>
     function toggleMenus() {
@@ -132,16 +162,6 @@
             pageMenu.style.display = 'none'; // 페이지 메뉴 숨기기
         }
     }
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var editor = new toastui.Editor({
-            el: document.querySelector("#toastEditor"), // 에디터를 넣고 싶은 요소
-            height: "500px", // 필요에 따라 높이 조정
-            initialEditType: "wysiwyg", // WYSIWYG 모드
-            previewStyle: "vertical",
-        });
-    });
 </script>
 <!--자바스크립트 끝-->
 </body>
