@@ -22,7 +22,7 @@ public class UserSecurityService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<com.korea.test.user.User> _user = this.userRepository.findByusername(username);
         if (_user.isEmpty()) {
-            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
+            throw new UsernameNotFoundException("사용자"+ username + "을(를) 찾을 수 없습니다.");
         }
         com.korea.test.user.User user = _user.get();
         List<GrantedAuthority> authorities = new ArrayList<>();

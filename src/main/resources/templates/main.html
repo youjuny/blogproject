@@ -30,6 +30,12 @@
                 <a sec:authorize="isAnonymous()" href="/user/login">로그인</a>
                 <a sec:authorize="isAuthenticated()" href="/user/logout">로그아웃</a>
             </button>
+            <button style="width:100px;" class="btn btn-square btn-ghost">
+                <a href="/oauth2/authorization/google">Google</a>
+            </button>
+            <button style="width:100px;" class="btn btn-square btn-ghost">
+                <a href="/oauth2/authorization/naver">NAVER</a>
+            </button>
         </div>
     </div>
     <!-- 네비게이션바 끝 -->

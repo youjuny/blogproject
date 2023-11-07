@@ -20,27 +20,27 @@
     <form th:action="@{/user/signup}" id="signForm" object="${userCreateForm}" method="post">
         <div replace="~{form_errors :: formErrorsFragment}"></div>
         <div class="form-control w-full max-w-xs">
-            아이디 :
+            <label for="username">아이디</label>
             <input type="text" name="username" field="*{username}" placeholder="아이디를 입력하세요" class="input input-bordered w-full max-w-xs" />
         </div>
         <br>
         <div>
-            비밀번호 :
+            <label for="password">비밀번호</label>
             <input type="password" name="password" field="*{password}" placeholder="비밀번호를 입력하세요" class="input input-bordered w-full max-w-xs" />
         </div>
         <br>
         <div>
-            비밀번호 확인 :
+            <label for="confirmPassword">비밀번호 확인</label>
             <input type="password" name="confirmPassword" field="*{confirmPassword}" placeholder="비밀번호를 다시 입력하세요" class="input input-bordered w-full max-w-xs" />
         </div>
         <br>
         <div>
-            닉네임 :
+            <label for="nickname">닉네임</label>
             <input type="text" name="nickname" field="*{nickname}" placeholder="닉네임을 입력하세요" class="input input-bordered w-full max-w-xs" />
         </div>
         <br>
         <div>
-            이메일 :
+            <label for="email">이메일</label>
             <input type="email" name="email" field="*{email}" placeholder="이메일을 입력하세요" class="input input-bordered w-full max-w-xs" />
         </div>
         <br>
