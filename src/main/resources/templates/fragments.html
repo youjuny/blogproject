@@ -5,14 +5,46 @@
     <title>Title</title>
 </head>
 <body>
-<li th:fragment="tree(targetCategory, categoryList)" th:each="category : ${categoryList}" th:class="${#lists.isEmpty(category.childList) and category.id == targetCategory.id} ? 'selected-item' : '' ">
-    <a th:href="@{|/category/${category.id}|}" th:if="${#lists.isEmpty(category.childList)}" th:text="${category.title}" onclick="saveOpenList()"></a>
-    <details th:id="${'d' + category.id}" th:unless="${#lists.isEmpty(category.childList)}">
-        <summary th:class="${category.id == targetCategory.id} ? 'selected-item' : '' ">
+<li th:fragment="tree(targetCategory, categoryList)"
+    th:each="category : ${categoryList}"
+    th:with="noChild = ${#lists.isEmpty(category.childList)},
+             hasChild = ${!noChild},
+             onTarget = ${targetCategory.id == category.id}"
+    th:class="${noChild and onTarget} ? 'selected-item' : '' ">
+    <a th:href="@{|/category/${category.id}|}" th:if="${noChild}"
+       th:text="${category.title}" onclick="saveOpenList()"></a>
+    <details th:id="${'d' + category.id}" th:unless="${noChild}">
+        <summary th:class="${onTarget} ? 'selected-item' : '' ">
             <a th:href="@{|/category/${category.id}|}" th:text="${category.title}" onclick="saveOpenList()"></a>
         </summary>
         <ul>
-            <li th:if="${#lists.isEmpty(category.childList)}" th:replace="~{/fragments :: tree(${targetCategory}, ${category.childList})}"></li>
+            <li th:if="${noChild}"
+                th:replace="~{/fragments :: tree(${targetCategory}, ${category.childList})}"></li>
+        </ul>
+    </details>
+</li>
+
+<div th:fragment="tree-item(category, hasChild, checkable)">
+    <input th:if="${hasChild and checkable}" type="radio" name="destinationId">
+    <a th:if="${hasChild}"
+       th:text="${category.title}" onclick="saveOpenList()"></a>
+</div>
+
+<li th:fragment="move_tree(targetCategory, categoryList, notCheckableList)"
+    th:each="category : ${categoryList}"
+    th:with="noChild = ${#lists.isEmpty(category.childList)},
+             hasChild = ${!noChild},
+             onTarget = ${targetCategory.id == category.id},
+             checkable = ${!#lists.contains(notCheckableList, category)}"
+    th:class="${noChild and onTarget} ? 'selected-item' : '' ">
+    <div th:replace="~{/fragments::tree-item(${category}, ${noChild}, ${checkable})}"></div>
+    <details th:id="${'d' + category.id}" th:if="${hasChild}">
+        <summary th:class="${onTarget} ? 'selected-item' : '' ">
+            <div th:replace="~{/fragments::tree-item(${category}, ${hasChild}, ${checkable})}"></div>
+        </summary>
+        <ul>
+            <li th:if="${noChild}"
+                th:replace="~{/fragments :: move_tree(${targetCategory}, ${category.childList}, ${notCheckableList})}"></li>
         </ul>
     </details>
 </li>

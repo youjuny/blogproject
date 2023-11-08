@@ -33,14 +33,14 @@ a{
 .category-menu {
         background: Lightcoral;
         width:10%;
-        height:800px;
+        height:1000px;
         text-align: center;
 }
 
 .page-menu {
     background: indianred;
     width:10%;
-    height:800px;
+    height:1000px;
     text-align: center;
 }
 
@@ -75,6 +75,15 @@ a{
 .toast-editor-custom {
     background:white;
     width:1300px;
+}
+
+.modal-box {
+    height: 70%;
+}
+
+.category-tree {
+    height: 80%;
+    border: 1px solid black;
 }
 
 

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,4 +57,12 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
+    public List<Category> getNotCheckableCategoryList(Category category, List<Category> notCheckableList) {
+        notCheckableList.add(category);
+        for(Category child : category.getChildList()) {
+            getNotCheckableCategoryList(child, notCheckableList);
+        }
+
+        return notCheckableList;
+    }
 }

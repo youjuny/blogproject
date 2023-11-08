@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -65,10 +66,13 @@ public class CategoryController {
         Category category = categoryService.getCategoryById(categoryId);
         List<Category> categoryList = categoryService.getParentCategoryList();
 
+        List<Category> notCheckableList = categoryService.getNotCheckableCategoryList(category, new ArrayList<>());
+
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("postList", category.getPostList());
         model.addAttribute("targetPost", category.getPostList().get(0));
         model.addAttribute("targetCategory" , category);
+        model.addAttribute("notCheckableList", notCheckableList);
 
         return "main";
     }

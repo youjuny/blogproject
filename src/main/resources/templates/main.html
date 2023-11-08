@@ -36,6 +36,9 @@
             <button style="width:100px;" class="btn btn-square btn-ghost">
                 <a href="/oauth2/authorization/naver">NAVER</a>
             </button>
+            <button style="width:100px;" class="btn btn-square btn-ghost">
+                <a href="/oauth2/authorization/kakao">kakao</a>
+            </button>
         </div>
     </div>
     <!-- 네비게이션바 끝 -->
@@ -68,6 +71,28 @@
                     <button sec:authorize="isAuthenticated()" class="btn" onclick="return confirmCategoryUpdate();">카테고리수정</button>
                 </form>
             </div>
+            <br>
+            <button class="btn" onclick="my_modal_1.showModal()">카테고리 이동</button>
+            <dialog id="my_modal_1" class="modal">
+                <div class="modal-box w-11/12 max-w-5xl">
+                    <h3 class="font-bold text-lg">카테고리를 이동시킵니다.</h3>
+                    <div class="category-tree">
+                        <ul class="menu">
+                            <li th:replace="~{/fragments :: move_tree(${targetCategory}, ${categoryList}, ${notCheckableList})}"></li>
+                        </ul>
+                    </div>
+                    <div class="modal-action">
+                        <form method="dialog">
+                            <button class="btn">이동</button>
+                        </form>
+                    </div>
+                    <div class="modal-action">
+                        <form method="dialog">
+                            <button class="btn">취소</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
         </div>
         <div class="page-menu">
             페이지 메뉴
