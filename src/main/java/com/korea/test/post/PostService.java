@@ -1,8 +1,14 @@
 package com.korea.test.post;
 
 import com.korea.test.category.Category;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,4 +54,12 @@ public class PostService {
         return postRepository.findByCategory(targetcategory);
     }
 
+
+    public List<Post> getPostListSortedByTitleAsc() {
+        return postRepository.findAllByOrderByTitleAsc();
+    }
+
+    public List<Post> getPostListSortedByTitleDesc() {
+        return postRepository.findAllByOrderByTitleDesc();
+    }
 }

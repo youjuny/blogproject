@@ -40,6 +40,19 @@
                 <a href="/oauth2/authorization/kakao">kakao</a>
             </button>
         </div>
+        <!--검색기능-->
+        <div class="search-bar">
+            <div class="input-group">
+                <form action="#" method="get" onsubmit="return searchCategories()">
+                    <input type="text" id="categorySearchInput" placeholder="게시물 찾기" class="input input-bordered input-primary w-full max-w-xsd" th:value="${keyword}"/>
+                </form>
+                <button class="btn btn-square" onclick="searchCategories()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
     </div>
     <!-- 네비게이션바 끝 -->
     <div class="content-wrap" id="sideMenu">
@@ -67,7 +80,7 @@
                 <br>
                 <form action="/category/categoryUpdate" method="post">
                     <input type="hidden" name="id" th:value="${targetCategory.id}">
-                    <input type="text" name="title" placeholder="Type here" class="input input-bordered w-full max-w-xs" th:value="${targetCategory.title}">
+                    <input type="text" name="title" placeholder="" class="input input-bordered w-full max-w-xs" th:value="${targetCategory.title}">
                     <button sec:authorize="isAuthenticated()" class="btn" onclick="return confirmCategoryUpdate();">카테고리수정</button>
                 </form>
             </div>
@@ -76,16 +89,17 @@
             <dialog id="my_modal_1" class="modal">
                 <div class="modal-box w-11/12 max-w-5xl">
                     <h3 class="font-bold text-lg">카테고리를 이동시킵니다.</h3>
-                    <div class="category-tree">
-                        <ul class="menu">
-                            <li th:replace="~{/fragments :: move_tree(${targetCategory}, ${categoryList}, ${notCheckableList})}"></li>
-                        </ul>
-                    </div>
-                    <div class="modal-action">
-                        <form method="dialog">
+                    <form th:action="@{/category/move}" method="post">
+                        <div class="category-tree">
+                            <ul class="menu">
+                                <li th:replace="~{/fragments :: move_tree(${targetCategory}, ${categoryList}, ${notCheckableList})}"></li>
+                            </ul>
+                        </div>
+                        <div class="modal-action">
+                            <input type="hidden" name="moveCategoryId" th:value="${targetCategory.id}">
                             <button class="btn">이동</button>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                     <div class="modal-action">
                         <form method="dialog">
                             <button class="btn">취소</button>
@@ -95,9 +109,19 @@
             </dialog>
         </div>
         <div class="page-menu">
-            페이지 메뉴
-            <!--            3. 템플릿에서 게시물 목록 출력-->
+            <div>페이지 메뉴</div>
+            <!--페이지개수표시-->
+            <div th:text="|현재 ${#lists.size(postList)}개의 페이지가 있습니다.|"></div>
+            <!--템플릿에서 게시물 목록 출력-->
+            <div>
+                <button class="btn" onclick="sortPosts('asc')">제목 오름차순 정렬</button>
+            </div>
+            <br>
+            <div>
+                <button class="btn" onclick="sortPosts('desc')">제목 내림차순 정렬</button>
+            </div>
             <ul>
+                <br>
                 <li th:each="post : ${postList}" th:class="${post.id == targetPost.id} ? 'selected-item' : '' ">
                     <a th:href="@{|/postDetail/${post.id}|}" th:text="${post.title}"></a>
                 </li>
@@ -112,24 +136,34 @@
         </div>
         <!-- 게시물 입력 구간 시작 -->
         <div id="content" class="content">
-            <form id="updateForm" method="post">
+            <form id="updateForm" method="post" action="/postUpdate">
                 <div>
                     <input type="hidden" name="id" th:value="${targetPost.id}">
                 </div>
                 <div>
-                    <input type="text" name="title" class="input input-bordered w-full max-w-xs"  style="width:1000px;" th:value="${targetPost.title}">
+                    <input type="text" name="title" class="input input-bordered w-full max-w-xs"  style="width:1000px;"
+                           th:value="${targetPost.title}">
                 </div>
                 <br>
                 <div class="toast-editor-custom">
                     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
                     <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
                     <div id="editor"></div>
+                    <div id="contents"></div>
+                    <textarea name="content" id="hiddenContent" style="display: none;"></textarea>
                     <script>
+                        const initialContent = `[[${targetPost.content}]]`; // 서버에서 가져온 내용
                         const editor = new toastui.Editor({
-                          el: document.querySelector('#editor'),
-                          previewStyle: 'vertical',
-                          height: '600px',
-                          initialValue: ""
+                            el: document.querySelector('#editor'),
+                            previewStyle: 'vertical',
+                            height: '600px',
+                            initialValue: initialContent,
+                            events: {
+                                change: function() {
+                                    const hiddenContent = document.getElementById('hiddenContent');
+                                    hiddenContent.value = editor.getMarkdown();
+                                }
+                            }
                         });
                     </script>
                     <!--                    <textarea name="content" cols="100" rows="20" th:text="${targetPost.content}"></textarea>-->
@@ -194,6 +228,51 @@
         }
     }
 </script>
+
+<script>
+    function searchCategories() {
+        var searchKeyword = document.getElementById("categorySearchInput").value.toLowerCase();
+        var postElements = document.querySelectorAll('.page-menu li');
+
+        postElements.forEach(function (element) {
+            var postTitle = element.innerText.toLowerCase();
+            if (postTitle.includes(searchKeyword)) {
+                element.style.display = "block";
+            } else {
+                element.style.display = "none";
+            }
+        });
+
+        return false; // 폼 전송 방지
+    }
+</script>
+<script>
+    function sortPosts(order) {
+        // 게시물을 오름차순 또는 내림차순으로 정렬하는 로직을 작성
+        var postElements = document.querySelectorAll('.page-menu li');
+
+        var sortedPosts = Array.from(postElements).sort(function(a, b) {
+            var titleA = a.innerText.toLowerCase();
+            var titleB = b.innerText.toLowerCase();
+
+            if (order === 'asc') {
+                return titleA.localeCompare(titleB);
+            } else {
+                return titleB.localeCompare(titleA);
+            }
+        });
+
+        // 정렬된 게시물을 화면에 적용
+        var pageMenu = document.querySelector('.page-menu ul');
+        pageMenu.innerHTML = ''; // 기존 목록 삭제
+
+        sortedPosts.forEach(function(postElement) {
+            pageMenu.appendChild(postElement);
+        });
+    }
+</script>
+
+
 <!--자바스크립트 끝-->
 </body>
 </html>

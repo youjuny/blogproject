@@ -10,11 +10,12 @@
     th:with="noChild = ${#lists.isEmpty(category.childList)},
              hasChild = ${!noChild},
              onTarget = ${targetCategory.id == category.id}"
-    th:class="${noChild and onTarget} ? 'selected-item' : '' ">
+    th:class="${noChild and onTarget} ? 'selected-item' : ''">
     <a th:href="@{|/category/${category.id}|}" th:if="${noChild}"
-       th:text="${category.title}" onclick="saveOpenList()"></a>
-    <details th:id="${'d' + category.id}" th:unless="${noChild}">
-        <summary th:class="${onTarget} ? 'selected-item' : '' ">
+       th:text="${category.title}" onclick="saveOpenList()"></a> <!-- 하위 노트가 없는 노트 -->
+
+    <details th:id="${'d' + category.id}" th:unless="${noChild}" > <!-- 하위 노트가 있는 노트 -->
+        <summary th:class="${category.id == targetCategory.id} ? 'selected-item' : '' ">
             <a th:href="@{|/category/${category.id}|}" th:text="${category.title}" onclick="saveOpenList()"></a>
         </summary>
         <ul>
@@ -25,9 +26,9 @@
 </li>
 
 <div th:fragment="tree-item(category, hasChild, checkable)">
-    <input th:if="${hasChild and checkable}" type="radio" name="destinationId">
+    <input th:if="${hasChild and checkable}" type="radio" name="destinationId" th:value="${category.id}">
     <a th:if="${hasChild}"
-       th:text="${category.title}" onclick="saveOpenList()"></a>
+       th:text="${category.title}" onclick="saveOpenList()"></a> <!-- 하위 노트가 없는 노트 -->
 </div>
 
 <li th:fragment="move_tree(targetCategory, categoryList, notCheckableList)"
@@ -35,10 +36,11 @@
     th:with="noChild = ${#lists.isEmpty(category.childList)},
              hasChild = ${!noChild},
              onTarget = ${targetCategory.id == category.id},
-             checkable = ${!#lists.contains(notCheckableList, category)}"
-    th:class="${noChild and onTarget} ? 'selected-item' : '' ">
+             checkable = true"
+    th:class="${noChild and onTarget} ? 'selected-item' : ''">
+
     <div th:replace="~{/fragments::tree-item(${category}, ${noChild}, ${checkable})}"></div>
-    <details th:id="${'d' + category.id}" th:if="${hasChild}">
+    <details th:id="${'d' + category.id}" th:if="${hasChild}" > <!-- 하위 노트가 있는 노트 -->
         <summary th:class="${onTarget} ? 'selected-item' : '' ">
             <div th:replace="~{/fragments::tree-item(${category}, ${hasChild}, ${checkable})}"></div>
         </summary>

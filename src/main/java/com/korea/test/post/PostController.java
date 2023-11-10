@@ -3,6 +3,11 @@ package com.korea.test.post;
 import com.korea.test.category.Category;
 import com.korea.test.category.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,28 +53,38 @@ public class PostController {
     public String createPost (Long categoryId) {
         Category category = categoryService.getCategoryById(categoryId);
         postService.saveDefaultPost(category);
-        return "redirect:/categoryId" + categoryId;
+        return "redirect:/category/" + categoryId;
     }
 
 
 
 
     @GetMapping("/postDetail/{id}")
-    public String postDetail(Model model, @PathVariable Long id) {
+    public String postDetail(Model model, @PathVariable Long id, @RequestParam(name = "sort", defaultValue = "asc") String sort) {
         Post post = postService.getPostById(id);
         List<Post> postList = postService.getPostListByCategory(post.getCategory());
         List<Category> categoryList = categoryService.getParentCategoryList();
+        List<Post> sortedPostList;
+
+        if (sort.equals("asc")) {
+            sortedPostList = postService.getPostListSortedByTitleAsc();
+        } else {
+            sortedPostList = postService.getPostListSortedByTitleDesc();
+        }
 
         model.addAttribute("targetPost", post);
         model.addAttribute("postList", postService.getPostList());
         model.addAttribute("postList", postList);
         model.addAttribute("targetCategory", post.getCategory());
         model.addAttribute("categoryList", categoryList);
-
+        model.addAttribute("sort", sort);
         return "main";
     }
+
+
+
     @PostMapping("/postUpdate")
-    public String postUpdate(Long id, String title, String content) {
+    public String postUpdate(@RequestParam Long id, @RequestParam String title, @RequestParam String content) {
         Post post = postService.getPostById(id);
 
         if(title.trim().length() == 0 ) {
@@ -78,7 +93,6 @@ public class PostController {
 
         post.setTitle(title);
         post.setContent(content);
-
         postService.save(post);
         return "redirect:/postDetail/" + id;
     }

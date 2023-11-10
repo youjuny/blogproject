@@ -84,6 +84,7 @@ a{
 .category-tree {
     height: 80%;
     border: 1px solid black;
+    overflow: auto;
 }
 
 

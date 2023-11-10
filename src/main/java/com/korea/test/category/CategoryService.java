@@ -1,7 +1,12 @@
 package com.korea.test.category;
 
 import com.korea.test.post.Post;
+import com.korea.test.user.User;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,6 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+
 
     public List<Category> getCategoryList() {
         return categoryRepository.findAll();
@@ -65,4 +71,16 @@ public class CategoryService {
 
         return notCheckableList;
     }
+
+    public void moveCategoryTo(Long moveCategoryId, Long destinationId) {
+        Category moveCategory = getCategoryById(moveCategoryId);
+        Category destCategory = getCategoryById(destinationId);
+
+        moveCategory.setParent(destCategory);
+        categoryRepository.save(moveCategory);
+
+
+    }
+
+
 }

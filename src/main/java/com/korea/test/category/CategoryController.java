@@ -4,11 +4,10 @@ package com.korea.test.category;
 import com.korea.test.post.Post;
 import com.korea.test.post.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,17 +21,33 @@ public class CategoryController {
     private final PostService postService;
     private final CategoryService categoryService;
 
+    @RequestMapping("/{categoryId}")
+    public String categoryDetail(@PathVariable("categoryId") Long categoryId, Model model) {
+
+        Category category = categoryService.getCategoryById(categoryId);
+        List<Category> categoryList = categoryService.getParentCategoryList();
+
+        List<Category> notCheckableList = categoryService.getNotCheckableCategoryList(category, new ArrayList<>());
+
+        model.addAttribute("categoryList", categoryList);
+        model.addAttribute("postList", category.getPostList());
+        model.addAttribute("targetPost", category.getPostList().get(0));
+        model.addAttribute("targetCategory" , category);
+        model.addAttribute("notCheckableList", notCheckableList);
+
+        return "main";
+    }
     @RequestMapping("/")
     public String main(Model model) {
 
         List<Post> postList = postService.getPostList();
         List<Category> categoryList = categoryService.getParentCategoryList();
-
-        if (categoryList.isEmpty()) {
+        System.out.println(categoryList.size());
+        if(categoryList.isEmpty()) {
             return "redirect:/";
         }
 
-        if (postList.isEmpty()) {
+        if(postList.isEmpty()) {
             postService.saveDefaultPost(categoryList.get(0));
             return "redirect:/";
         }
@@ -59,24 +74,6 @@ public class CategoryController {
         return "redirect:/category/" + category.getId();
     }
 
-
-    @RequestMapping("/{categoryId}")
-    public String categoryDetail(@PathVariable("categoryId") Long categoryId, Model model) {
-
-        Category category = categoryService.getCategoryById(categoryId);
-        List<Category> categoryList = categoryService.getParentCategoryList();
-
-        List<Category> notCheckableList = categoryService.getNotCheckableCategoryList(category, new ArrayList<>());
-
-        model.addAttribute("categoryList", categoryList);
-        model.addAttribute("postList", category.getPostList());
-        model.addAttribute("targetPost", category.getPostList().get(0));
-        model.addAttribute("targetCategory" , category);
-        model.addAttribute("notCheckableList", notCheckableList);
-
-        return "main";
-    }
-
     @PostMapping("/categoryDelete")
     public String categoryDelete(Long id) {
         if (id != null) {
@@ -99,6 +96,14 @@ public class CategoryController {
 
         categoryService.save(category);
         return "redirect:/category/" + id;
+    }
+
+
+    @PostMapping("/move")
+    public String moveCategory(Long moveCategoryId, Long destinationId) {
+        categoryService.moveCategoryTo(moveCategoryId, destinationId);
+        return "redirect:/category/" + moveCategoryId;
+
     }
 
 
